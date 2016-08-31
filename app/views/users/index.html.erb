@@ -1,0 +1,21 @@
+<h1>Welcome!</h1>
+<% if flash[:errors] %>
+<p style="color:red"><%=flash[:errors] %></p>
+<% end %>
+<h2>Register:</h2>
+<form action='/register' method='post'>
+<input type='hidden' name ='authenticity_token' value="<%=form_authenticity_token%>">
+<div><label>First Name:</label><input type='text' name='first_name'></div>
+<div><label>Last Name:</label><input type='text' name='last_name'></div>
+<div><label>Email:</label><input type='text' name='email'></div>
+<div><label>Password:</label><input type='text' name='password'></div>	
+<input type="submit" value='REGISTER'>
+</form>
+
+<h2>Login: </h2>
+<form action='/login' method='post'>
+<input type='hidden' name ='authenticity_token' value="<%=form_authenticity_token%>">
+<div><label>Email:</label><input type='text' name='email'></div>
+<div><label>Password:</label><input type='text' name='password'></div>
+<input type="submit" value='LOGIN'>
+</form>

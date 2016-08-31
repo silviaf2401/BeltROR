@@ -1,0 +1,90 @@
+<h1>Hi <%=@user.first_name%></h1>
+<a href='/logout'>Logout</a>
+<a href='/shoes'>Go to all products</a>
+<% if flash[:errors] %>
+<p style="color:red"><%=flash[:errors] %></p>
+<% end %>
+
+<form action='/sell' method='post'>
+<input type='hidden' name ='authenticity_token' value="<%=form_authenticity_token%>">
+<div><label>Name</label> <input type='text' name='name'></div>
+<div><label>Amount</label><input type='text' name='price'></div>
+<input type="submit" value='SELL'>
+</form>
+<% if @ownproducts_not_yet_sold.empty? %>
+<h3>You don't have any products for sale </h3>
+<%end%>
+<% if !@ownproducts_not_yet_sold.empty? %>
+<h3> Your products that are not yet sold: </h3>
+<table>
+	<tr>
+		<td> Product </td>
+		<td> Date Posted </td>
+		<td> Amount</td>
+		<td> Action </td>
+	</tr>
+	<% @ownproducts_not_yet_sold.each do |p| %>
+	<tr>
+		<td><%=p.name%></td>
+		<td><%=p.created_at.strftime("%B %d, %Y")%></td>
+		<td>$<%=number_with_precision(p.price, :precision => 2)%></td>
+		<td><form method='post' action='/remove/<%=p.id%>'><input type='hidden' name ='authenticity_token' value="<%=form_authenticity_token%>"><input type='submit' value='Remove'></form></td>
+		
+		<%end%>
+
+	</tr>
+</table>
+<% end %>
+
+
+
+<% if @sales.empty? %>
+<h3>You have not sold any products yet </h3>
+<%end%>
+<% if !@sales.empty? %>
+<h3> Your sales: </h3>
+<table>
+	<tr>
+		<td> Product </td>
+		<td> Date Bought </td>
+		<td> Buyer</td>
+		<td> Amount </td>
+	</tr>
+	<% @sales.each do |s| %>
+	<tr>
+		<td><%=s.name%></td>
+		<td><%=s.created_at.strftime("%B %d, %Y")%></td>
+		<td><%=User.find(s.buyer_id).first_name%> <%=User.find(s.buyer_id).last_name%></td>
+		<td>$<%=number_with_precision(s.price, :precision => 2)%></td>
+		<%end%>
+	</tr>
+</table>
+<p>Total sales: $<%=number_with_precision(Productsold.where(seller_id_id: session['user_id']).sum(:price), :precision => 2)%></p>
+<% end %>
+
+
+<% if @purchases.empty? %>
+<h3>You have not bought any products yet </h3>
+<%end%>
+<% if !@purchases.empty? %>
+<h3> Purchases </h3>
+<table>
+	<tr>
+		<td> Product </td>
+		<td> Date Bought </td>
+		<td> Seller</td>
+		<td> Amount </td>
+	</tr>
+	<% @purchases.each do |p| %>
+	<tr>
+		<td><%=p.name%></td>
+		<td><%=p.created_at.strftime("%B %d, %Y")%></td>
+		<td><%=User.find(p.seller_id).first_name%> <%=User.find(p.seller_id).last_name%></td>
+		<td>$<%=number_with_precision(p.price, :precision => 2)%></td>
+		<%end%>
+	</tr>
+</table>
+<p>Total purchases: $<%=number_with_precision(Productbought.where(buyer_id_id: session['user_id']).sum(:price), :precision => 2)%></p>
+<% end %>
+
+

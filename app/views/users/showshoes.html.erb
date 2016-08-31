@@ -1,0 +1,37 @@
+<h1>Hi <%=@user.first_name%></h1>
+<a href='/logout'>Logout</a>
+<a href='/dashboard/<%=@user.id%>'>Go to dashboard</a>
+
+
+<% if @shoes.empty? %>
+<h3>No shoes have been listed for sale yet </h3>
+<%end%>
+<% if !@shoes.empty? %>
+<h3> All products </h3>
+<table>
+	<tr>
+		<td> Product </td>
+		<td> Seller </td>
+		<td> Date Posted </td>
+		<td> Amount</td>
+		<td> Action </td>
+	</tr>
+	<% @shoes.each do |s| %>
+	<tr>
+		<td><%=s.name%></td>
+		<td><%=User.find(s.seller_id_id).first_name%> <%=User.find(s.seller_id_id).last_name%></td>
+		<td><%=s.created_at.strftime("%B %d, %Y")%></td>
+		<td>$<%=number_with_precision(s.price, :precision => 2)%></td>
+		<td><form method='post' action='/buy/<%=s.id%>'>
+			<input type='hidden' name ='authenticity_token' value="<%=form_authenticity_token%>">
+			<input type='submit' value='Buy'>
+		</form></td>
+		
+		<%end%>
+
+	</tr>
+</table>
+<% end %>
+
+
+
